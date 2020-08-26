@@ -228,6 +228,10 @@ static bool is_log_level_output(int elevel, int log_min_level) {
 static void write_jsonlog(ErrorData *edata) {
   StringInfoData buf;
   TransactionId txid = GetTopTransactionIdIfAny();
+#if (PG_VERSION_NUM >= 130000)
+  bool am_syslogger;
+  am_syslogger = MyBackendType == B_LOGGER;
+#endif
 
   // Disable logs to server, we don't want duplicate entries in the server.
   edata->output_to_server = false;
